@@ -113,19 +113,37 @@ server <- function(input, output, session) {
   unknownLastMajorCheck <- reactive({ if (!is.null(moorings())){is.na(moorings()$`Last major check`)}})
   onRequest <- reactive({ if (!is.null(moorings())){moorings()$`On request (bool)`}})
   
-    
   acceptableChainSize <- reactive({if (!is.null(moorings())){
-    moorings()$`Chain size mm` >= input$chain_size_range[1] & moorings()$`Chain size mm` <= input$chain_size_range[2]}
-    })
+    !is.na(moorings()$`Chain size mm`) &
+    moorings()$`Chain size mm` >= input$chain_size_range[1] &
+    moorings()$`Chain size mm` <= input$chain_size_range[2] }
+  })
   acceptableChainLength <- reactive({if (!is.null(moorings())){
-    moorings()$`Chain length m` >= input$chain_length_range[1] & moorings()$`Chain length m` <= input$chain_length_range[2]}
-    })
+    !is.na(moorings()$`Chain length m`) & 
+    moorings()$`Chain length m` >= input$chain_length_range[1] &
+    moorings()$`Chain length m` <= input$chain_length_range[2]}
+  })
   acceptableMaxSize <- reactive({if (!is.null(moorings())){
-    moorings()$`Max size m` >= input$max_size_range[1] & moorings()$`Max size m` <= input$max_size_range[2]}
-    })
+    !is.na(moorings()$`Max size m`) &
+    moorings()$`Max size m` >= input$max_size_range[1] &
+    moorings()$`Max size m` <= input$max_size_range[2]}
+  })
   acceptableLastMajorCheck <- reactive({if (!is.null(moorings())){
-    moorings()$`Last major check` >= input$last_major_check_range[1] & moorings()$`Last major check` <= input$last_major_check_range[2]}
-    })
+    input$last_major_check_range
+    
+#    print(input$last_major_check_range)
+#    print(moorings()$`Last major check`)
+#    print(!is.na(moorings()$`Last major check`))
+#    print(moorings()$`Last major check` >= input$last_major_check_range[1])
+#    print(moorings()$`Last major check` <= input$last_major_check_range[2])
+#    
+#    print(moorings()$`Last major check` >= input$last_major_check_range[1] & 
+#            moorings()$`Last major check` <= input$last_major_check_range[2])
+    
+    !is.na(moorings()$`Last major check`) &
+    moorings()$`Last major check` >= input$last_major_check_range[1] & 
+    moorings()$`Last major check` <= input$last_major_check_range[2]}
+  })
   
   
   filteredData <- reactive({
@@ -136,7 +154,7 @@ server <- function(input, output, session) {
              )
     if (!is.null(moorings())){
       mooringsDf <- moorings()
-    
+      
       filterMask <- (
         acceptableChainSize() | (input$unknownChainSize & unknownChainSize())
       ) & (

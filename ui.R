@@ -54,8 +54,8 @@ shinyUI(
                                         value = c(0,20), step = 1, post = "m"
                             ),
                             sliderInput("last_major_check_range", "Last major check",
-                                        as.Date("1900-01-01"), as.Date("2100-01-01"),
-                                        value = c(as.Date("1900-01-01"), as.Date("2020-01-01"))
+                                        as.POSIXct("1900-01-01"), as.POSIXct("2100-01-01"),
+                                        value = c(as.POSIXct("1900-01-01"), as.POSIXct("2020-01-01")), timeFormat="%b %Y"
                             ),
                             checkboxInput("unknownChainSize", "Show unknown chain size", TRUE),
                             checkboxInput("unknownChainLength", "Show unknown chain length", TRUE),
