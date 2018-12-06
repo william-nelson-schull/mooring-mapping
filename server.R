@@ -11,6 +11,7 @@ server <- function(input, output, session) {
   # Keep alive function to ping the UI to stop Heroku closing the websocket
   output$keepAlive <- renderText({
     req(input$count)
+    cat(file = stderr(), "Keep alive: pinging UI \n")
     paste("keep alive ", input$count)
   })
   
