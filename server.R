@@ -63,7 +63,7 @@ server <- function(input, output, session) {
     error = function(e){
       
       cat(file = stderr(), "Data load failed: \n")
-      cat(file = stderr(), e, "\n")
+      cat(file = stderr(), paste(e, "\n"), "\n")
       
       parsedData <- NULL
       validate(need(!is.null(parsedData), "Failed to read data from file"))
@@ -127,10 +127,12 @@ server <- function(input, output, session) {
   
   
   filteredData <- reactive({
+    cat(file = stderr(), "Building filtered data: \n")
+    
     validate(
       need(!is.null(moorings()), "Failed to read the data from the file")
              )
-    if (!is.null(input$dataFile)){
+    if (!is.null(moorings())){
       mooringsDf <- moorings()
     
       filterMask <- (
@@ -148,6 +150,8 @@ server <- function(input, output, session) {
          )
       )
     
+      cat(file = stderr(), "Built filtered mask: \n")
+      
       filteredMoorings <- mooringsDf[filterMask,]
       filteredMoorings
     }
