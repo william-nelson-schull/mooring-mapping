@@ -6,6 +6,12 @@ library(glue)
 
 server <- function(input, output, session) {
   
+  # Keep alive function to ping the UI to stop Heroku closing the websocket
+  output$keepAlive <- renderText({
+    req(input$count)
+    paste("keep alive ", input$count)
+  })
+  
   # Read data from up-loaded Excel file
   moorings <- reactive({
     req(input$dataFile)
@@ -14,13 +20,19 @@ server <- function(input, output, session) {
     
     pathToFile <- inFile$datapath
     
+    cat(file = stderr(), "Reading data from file: ", pathToFile, "\n")
+    
     tryCatch({
       excel_data <- pathToFile %>%
         excel_sheets() %>%
         set_names() %>%
         map(read_excel, path = pathToFile)
-        
+   
+      cat(file = stderr(), "Binding received data together: \n")
+           
       parsedData <- bind_rows(excel_data)
+      
+      cat(file = stderr(), "Building lat-longs: \n")
       
       # Build the actual latitude and longitude
       parsedData$latitude <- parsedData$`Lat - deg` + (parsedData$`Lat - min` + parsedData$`Lat - dig min`/ 1000.0)/ 60.0
@@ -49,6 +61,10 @@ server <- function(input, output, session) {
       },
     warning = function(w){},
     error = function(e){
+      
+      cat(file = stderr(), "Data load failed: \n")
+      cat(file = stderr(), e, "\n")
+      
       parsedData <- NULL
       validate(need(!is.null(parsedData), "Failed to read data from file"))
       },

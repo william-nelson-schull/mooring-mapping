@@ -4,9 +4,26 @@ library(RColorBrewer)
 library(readxl)
 
 shinyUI(
-#  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
   navbarPage(
-    title = "Features",
+    tags$head(
+      HTML(
+        "
+          <script>
+          var socket_timeout_interval
+          var n = 0
+          $(document).on('shiny:connected', function(event) {
+          socket_timeout_interval = setInterval(function(){
+          Shiny.onInputChange('count', n++)
+          }, 15000)
+          });
+          $(document).on('shiny:disconnected', function(event) {
+          clearInterval(socket_timeout_interval)
+          });
+          </script>
+          "
+      )
+    ),
+    title = "Schull Moorings",
     position= "static-top",
     inverse = T,
     # Tab to display the filters & map
@@ -60,7 +77,8 @@ shinyUI(
                    fileInput('dataFile', 'Choose xlsx file',
                              accept = c(".xlsx")
                  )
-                )
+                ),
+                textOutput("keepAlive")
                ),
              fluidRow(
                column(width = 6, offset = 0,
