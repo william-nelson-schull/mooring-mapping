@@ -1,7 +1,6 @@
 library(shiny)
 library(leaflet)
 library(RColorBrewer)
-library(tidyverse)
 library(readxl)
 library(glue)
 
