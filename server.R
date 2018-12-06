@@ -2,6 +2,7 @@ library(shiny)
 library(leaflet)
 library(RColorBrewer)
 library(readxl)
+library(tidyverse)
 library(glue)
 
 server <- function(input, output, session) {
