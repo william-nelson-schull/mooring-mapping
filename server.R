@@ -11,8 +11,9 @@ server <- function(input, output, session) {
   # Keep alive function to ping the UI to stop Heroku closing the websocket
   output$keepAlive <- renderText({
     req(input$count)
-    cat(file = stderr(), "Keep alive: pinging UI \n")
-    paste("keep alive ", input$count)
+      pingCount <- input$count
+    cat(file = stderr(), "Keep alive: pinging UI : ", pingCount)
+    paste("keep alive ", pingCount)
   })
   
   # Read data from up-loaded Excel file
@@ -132,15 +133,6 @@ server <- function(input, output, session) {
   acceptableLastMajorCheck <- reactive({if (!is.null(moorings())){
     input$last_major_check_range
     
-#    print(input$last_major_check_range)
-#    print(moorings()$`Last major check`)
-#    print(!is.na(moorings()$`Last major check`))
-#    print(moorings()$`Last major check` >= input$last_major_check_range[1])
-#    print(moorings()$`Last major check` <= input$last_major_check_range[2])
-#    
-#    print(moorings()$`Last major check` >= input$last_major_check_range[1] & 
-#            moorings()$`Last major check` <= input$last_major_check_range[2])
-    
     !is.na(moorings()$`Last major check`) &
     moorings()$`Last major check` >= input$last_major_check_range[1] & 
     moorings()$`Last major check` <= input$last_major_check_range[2]}
@@ -195,9 +187,6 @@ server <- function(input, output, session) {
     m <- addTiles(m)
     m <- setView(m, -9.542683, 51.524050, zoom = 16)
     m   
-    
-#    leaflet(moorings()) %>% addTiles() %>%
-#      fitBounds(~min(longitude), ~min(latitude), ~max(longitude), ~max(latitude))
   })
   
   # Incremental changes to the map (in this case, replacing the
@@ -231,7 +220,7 @@ server <- function(input, output, session) {
                 }
         
               .leaflet-popup-content {
-                  width: 475px;
+                  width: 500px;
                   height: 300px;
               }
         
